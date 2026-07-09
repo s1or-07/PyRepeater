@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repeater Clone</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">Repeater Clone<small>· cliente HTTP manual</small></div>
+  <div class="loadbar">
+    <input id="loadUrl" type="text" placeholder="Pega una URL (https://host/ruta) y pulsa Cargar para crear la petición">
+    <button class="ghost" onclick="loadFromUrl()">Cargar</button>
+  </div>
+</header>
+
+<div class="tabsbar" id="tabsbar"></div>
+
+<div class="toolbar">
+  <button class="btn" id="sendBtn" onclick="sendRequest()">Send ▸</button>
+  <button class="ghost" id="cancelBtn" onclick="cancelRequest()" disabled>Cancel</button>
+  <div class="groupwrap">
+    <button class="ghost" id="groupBtn" onclick="toggleGroupPop()">Group ▾</button>
+    <div class="grouppop" id="groupPop" style="display:none">
+      <div class="gp-row"><label>Copias en paralelo</label><input type="number" id="gpCount" value="20" min="2" max="100"></div>
+      <div class="gp-row"><label style="font-size:12px"><input type="checkbox" id="gpTabs"> Usar las pestañas abiertas en vez de copias</label></div>
+      <div class="gp-note">Envío sincronizado con <b>last-byte synchronization</b> (HTTP/1). Las peticiones llegan casi a la vez: úsalo para probar <i>race conditions</i> en sistemas autorizados.</div>
+      <button class="btn" style="width:100%" onclick="sendGroup()">Enviar grupo en paralelo ▸</button>
+    </div>
+  </div>
+  <div class="nav">
+    <button onclick="histPrev()" title="Anterior">‹</button>
+    <span id="histInfo">0/0</span>
+    <button onclick="histNext()" title="Siguiente">›</button>
+  </div>
+  <div class="opts">
+    <label><input type="checkbox" id="optCL" checked onchange="syncTab()"> Actualizar Content-Length</label>
+    <label><input type="checkbox" id="optRedir" onchange="syncTab()"> Seguir redirecciones</label>
+    <label><input type="checkbox" id="optTLS" onchange="syncTab()"> Verificar TLS</label>
+  </div>
+  <div class="target">
+    <b>Target:</b>
+    <input id="target" type="text" placeholder="https://host:puerto" oninput="syncTab()">
+    <span class="proto" id="proto">HTTP/1</span>
+  </div>
+</div>
+
+<main>
+  <!-- Request -->
+  <div class="col reqcol">
+    <div class="paneh">
+      <span class="title">Request</span>
+      <div class="subtabs">
+        <span class="st active" data-v="pretty" onclick="setReqView('pretty')">Pretty</span>
+        <span class="st" data-v="raw" onclick="setReqView('raw')">Raw</span>
+        <span class="st" data-v="hex" onclick="setReqView('hex')">Hex</span>
+      </div>
+    </div>
+    <div class="editor" id="reqEditor">
+      <pre class="gutter" id="reqGutter">1</pre>
+      <div class="codewrap" id="reqWrap">
+        <pre class="hl" id="reqHL"></pre>
+        <textarea id="request" spellcheck="false"></textarea>
+      </div>
+      <pre class="hexview" id="reqHex"></pre>
+    </div>
+  </div>
+
+  <!-- Response -->
+  <div class="col respcol">
+    <div class="paneh">
+      <span class="title">Response</span>
+      <div class="subtabs">
+        <span class="st active" data-v="pretty" onclick="setRespView('pretty')">Pretty</span>
+        <span class="st" data-v="raw" onclick="setRespView('raw')">Raw</span>
+        <span class="st" data-v="headers" onclick="setRespView('headers')">Headers</span>
+        <span class="st" data-v="render" onclick="setRespView('render')">Render</span>
+      </div>
+    </div>
+    <div class="respbody">
+      <div class="respgrid" id="respGrid"></div>
+      <iframe class="render" id="respRender" sandbox></iframe>
+    </div>
+    <div class="statusbar">
+      <span id="statusInfo">Listo.</span>
+      <span id="timeInfo"></span>
+      <span id="sizeInfo"></span>
+    </div>
+  </div>
+
+  <!-- Lateral: Notas + Inspector -->
+  <div class="side">
+    <div class="sech">Notas</div>
+    <textarea id="notes" class="notes" placeholder="Notas de esta pestaña..." oninput="syncTab()"></textarea>
+    <div class="sech">Inspector</div>
+    <div class="insp" id="inspector"></div>
+  </div>
+</main>
+
+<!-- Modal de resultados del grupo paralelo -->
+<div class="modal" id="groupModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-h"><span>Resultados del grupo · last-byte sync</span><span class="x" onclick="closeGroup()">×</span></div>
+    <div class="gm-sum" id="gmSummary"></div>
+    <div class="gm-table" id="gmTable"></div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
