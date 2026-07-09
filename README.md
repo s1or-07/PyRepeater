@@ -1,4 +1,4 @@
-# Repeater Clone
+# PyRepeater
 
 Herramienta tipo **Burp Suite Repeater**: edita peticiones HTTP crudas,
 reenvíalas y analiza la respuesta con resaltado de sintaxis, historial, notas e
