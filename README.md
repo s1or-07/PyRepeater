@@ -75,20 +75,3 @@ send_request({"scheme": "https", "host": "example.com",
 # arrancar el servidor desde código
 run(host="127.0.0.1", port=8777, open_browser=False)
 ```
-
-## Cambios respecto a la versión de un solo archivo
-
-- **Separado en varios archivos y carpetas** (paquete Python + `web/`), en lugar
-  de todo el HTML/CSS/JS embebido como string.
-- **La interfaz se sirve desde disco** (`web/`) con tipos MIME correctos y
-  protección contra *path traversal*; las rutas resuelven relativas al paquete,
-  así funciona desde cualquier directorio.
-- **Contexto TLS con API pública** (`create_default_context` + `CERT_NONE`) en
-  lugar de la privada `ssl._create_unverified_context()`.
-- **Lectura de respuestas `chunked` más robusta**: espera al chunk terminador
-  real en vez de una heurística frágil sobre el último byte.
-- **CLI con `argparse`**: `--host`, `--no-browser`, `--version`, `--help`.
-- **Brotli opcional** y detectado en tiempo de import (antes fallaba en silencio).
-- **Corrección de UI**: el nombre por defecto de una pestaña ya no se desalinea
-  respecto a su `id`.
-- **Cierre limpio del servidor** (`shutdown` + `server_close`) al parar.
