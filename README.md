@@ -33,7 +33,7 @@ pip install brotli
 
 ## Estructura
 
-Antes todo vivía en un único archivo. Ahora está separado en un paquete Python
+Ahora está separado en un paquete Python
 y los assets web como archivos independientes:
 
 ```
